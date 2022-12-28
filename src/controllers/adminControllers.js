@@ -46,7 +46,15 @@ const deleteComment = async (request, response, next) => {
     response.status(result.statusCode).send(result);
 }
 
+const getOrderDistribution = async (request, response, next) => {
+    const result = await services.getOrderDistribution(request, response, next);
+    response.status(result.statusCode).send(result);
+}
 
+const getRefundDistribution = async (request, response, next) => {
+    const result = await services.getRefundDistribution(request, response, next);
+    response.status(result.statusCode).send(result);
+}
 
 module.exports = {
     adminLogin,
@@ -56,5 +64,7 @@ module.exports = {
     getMonthlyLeastDiscountRate,
     getTopTenCustomers,
     changeTopTenCustomersDiscountRate,
-    deleteComment
+    deleteComment,
+    getOrderDistribution,
+    getRefundDistribution
 };

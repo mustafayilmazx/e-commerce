@@ -415,6 +415,69 @@ const deleteComment = async (req,res,next) => {
     
 }
 
+const getOrderDistribution = async (req,res,next) => {
+    // check req.body.admin_id
+    if (!req.body.adminId) return {
+        success: false,
+        message: "You  didn't login as admin",
+        statusCode: 400
+    };
+
+    // check req.body.admin_id is exist
+    const isAdmin = await checkAdmin(req,res,next);
+    if(!isAdmin.success) return isAdmin;
+
+    // if req.body.year is not exist set it to current year
+    if (!req.query.year) req.query.year = new Date().getFullYear();
+
+    // if req.body.month is not exist set it to current month
+    if (!req.query.month) req.query.month = new Date().getMonth() + 1;
+
+
+
+    // make query
+    const q = 'SELECT `c2`.`name` as "name", SUM(`product_orders`.`quantity`) as "total_sale" FROM `product_orders` INNER JOIN category AS c1 ON category_id = `c1`.id AND year(`product_orders`.date) = ? AND month(`product_orders`.date) = ? INNER JOIN category as c2 ON `c1`.`parent_category` = `c2`.`id` GROUP BY `c1`.parent_category;';
+    try {
+        const result = await db.awaitQuery(q,[req.query.year,req.query.month]);
+        return {
+            success: true,
+            message: "Orders distribution fetched successfully",
+            statusCode: 200,
+            data: result
+        };
+    } catch (error) {
+        throw error;
+    }
+}
+
+
+const getRefundDistribution = async (req,res,next) => {
+    // check req.body.admin_id
+    if (!req.body.adminId) return {
+        success: false,
+        message: "You  didn't login as admin",
+        statusCode: 400
+    };
+
+    // check req.body.admin_id is exist
+    const isAdmin = await checkAdmin(req,res,next);
+    if(!isAdmin.success) return isAdmin;
+    
+    // make query
+    const q = 'SELECT month(date) as "Month",  product_id, products.name as "product_name" , SUM(quantity) as "Refund" FROM refund INNER JOIN products ON product_id = products.id GROUP BY MONTH(date), product_id ORDER BY MONTH(date) desc,SUM(quantity) DESC;';
+    try {
+        const result = await db.awaitQuery(q);
+        return {
+            success: true,
+            message: "Refund distribution fetched successfully",
+            statusCode: 200,
+            data: result
+        };
+    } catch (error) {
+        throw error;
+    }
+}
+
 
 module.exports = {
     adminLogin,
@@ -424,5 +487,7 @@ module.exports = {
     getMonthlyLeastDiscountRate,
     getTopTenCustomers,
     changeTopTenCustomersDiscountRate,
-    deleteComment
+    deleteComment,
+    getOrderDistribution,
+    getRefundDistribution
 }

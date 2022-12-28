@@ -759,6 +759,21 @@ const changeMail = async (req,res,next) => {
 }
 
 
+const getCategories = async () => {
+    // get all categories
+    const q = "SELECT * FROM category;";
+    try {
+        const categories = await db.awaitQuery(q);
+        return {
+            success: true,
+            message: "Categories fetched successfully",
+            statusCode: 200,
+            data: categories
+        };
+    } catch (error) {
+        throw error;
+    }
+}
 
 
 
@@ -787,4 +802,6 @@ module.exports = {
     deleteComment,
     changePassword,
     changeMail,
+    getCategories,
+    
 }

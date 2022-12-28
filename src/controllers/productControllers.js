@@ -65,7 +65,15 @@ const getProducts = async (request, response,next) => {
 
 }
 
+// get categories with using service.getCatgories
+
+const getCategories = async (request, response,next) => {
+    const categories = await services.getCategories();
+    response.status(200).send(categories);
+}
+
 
 module.exports = {
-    getProducts
-};
+    getProducts,
+    getCategories
+}

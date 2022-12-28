@@ -11,4 +11,6 @@ router.get('/get-monthly-least-sold-products', adminController.getMonthlyLeastDi
 router.get('/get-top-ten-customers',middleware.adminAuth ,adminController.getTopTenCustomers);
 router.post('/set-top-ten-customers-discount-rate', middleware.adminAuth, adminController.changeTopTenCustomersDiscountRate);
 router.post('/delete-comment', middleware.adminAuth, adminController.deleteComment);
+router.get('/get-order-distribution', middleware.adminAuth, adminController.getOrderDistribution);
+router.get('/get-refund-distribution', middleware.adminAuth, adminController.getRefundDistribution);
 module.exports = router;
